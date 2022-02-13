@@ -1,0 +1,6 @@
+classes= 1
+train=/home/yuqianjin/temp/coco/trainperson_yuqianjin.txt
+valid=/home/yuqianjin/temp/coco/val_yuqianjin.txt
+names = ../data/person.names
+backup = ../backup
+

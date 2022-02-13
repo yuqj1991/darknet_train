@@ -1,0 +1,6 @@
+classes= 89
+train  = ../dataset/roadSign/Main/train.txt
+valid  = ../dataset/roadSign/Main/val.txt
+names = data/roadSign.names
+backup = backup
+

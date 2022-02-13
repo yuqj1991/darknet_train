@@ -1,0 +1,7 @@
+classes= 80
+train  = /home/deepano/workspace/dataset/car_person_data/bdd100k/ImageSets/Main/train.txt
+valid  = /home/deepano/workspace/dataset/car_person_data/bdd100k/ImageSets/Main/val.txt
+names = data/coco.names
+backup = backup
+eval=coco
+
