@@ -24,8 +24,11 @@ layer make_polygon_layer(int batch, int classes)
     l.type = POLYGON;
     l.batch = batch;
     l.classes = classes;
+    l.out_w = 1;
+    l.out_h = 1;
     l.cost = (float*)xcalloc(1, sizeof(float));
     l.outputs = (8 + 1) * classes;
+    l.out_c = l.outputs;
     l.inputs = l.outputs;
     l.truths = (8 + 1) * classes;
     l.delta = (float*)xcalloc(batch*l.outputs, sizeof(float));
@@ -61,6 +64,7 @@ layer make_polygon_layer(int batch, int classes)
 }
 
 float sigmoid_loss (float label_id, float pred, float *delta) {
+    printf("loss layer label_id: %f, pred: %f \n", label_id,  pred);
     float loss = 0.;
     if (label_id == -1) {
         loss = -log(1 - pred);
@@ -144,11 +148,12 @@ void forward_polygon_layer(const layer l, network_state state)
         // 1)计算 左页 右页的label id 损失，使用sigmoid，损失函数吗？
         float sigmoid_loss_vale = 0.;
         sigmoid_loss_vale = sigmoid_loss(poly_label[0].label_id, l.output[b * l.outputs + 0], &(l.delta[b * l.outputs + 0]));
-        sigmoid_loss_vale += sigmoid_loss(poly_label[0].label_id, l.output[b * l.outputs + 9], &(l.delta[b * l.outputs + 9]));
+        sigmoid_loss_vale += sigmoid_loss(poly_label[1].label_id, l.output[b * l.outputs + 9], &(l.delta[b * l.outputs + 9]));
         // 2) 计算每一页的坐标损失，使用smoothL1
         float poly_loss = 0.;
         delta_polygon_box(poly_label, l.output + b * l.outputs, &poly_loss, l.delta + b * l.outputs);
         batch_loss += (poly_loss + sigmoid_loss_vale);
+        printf("poly_loss : %f , sigmoid_loss_vale: %f\n", poly_loss, sigmoid_loss_vale);
     }
     *(l.cost) = batch_loss / l.batch;
     printf("PolyGon loss : %f \n", *(l.cost));
@@ -158,8 +163,6 @@ void backward_polygon_layer(const layer l, network_state state)
 {
     axpy_cpu(l.batch*l.inputs, 1 / l.batch, l.delta, 1, state.delta, 1);
 }
-
-
 
 int get_poly_result(float *output, PolyGon_S* poly_result, float predict_threhold)
 {

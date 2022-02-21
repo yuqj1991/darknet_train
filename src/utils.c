@@ -267,6 +267,8 @@ void replace_image_to_label(const char* input_path, char* output_path)
     find_replace(output_path, "\\images\\train2014\\", "\\labels\\train2014\\", output_path);    // COCO
     find_replace(output_path, "\\images\\val2014\\", "\\labels\\val2014\\", output_path);        // COCO
     find_replace(output_path, "\\JPEGImages\\", "\\labels\\", output_path);    // PascalVOC
+
+    find_replace(output_path, "/scanImages/new_images/", "/home/baseuser/workspace/annoDir/page_label/", output_path);    // PascalVOC
     
     trim(output_path);
 

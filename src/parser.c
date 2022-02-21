@@ -38,6 +38,7 @@
 #include "upsample_layer.h"
 #include "version.h"
 #include "ctdet_layer.h"
+#include "polygon.h"
 #include "yolo_layer.h"
 #include "gaussian_yolo_layer.h"
 
@@ -91,6 +92,7 @@ LAYER_TYPE string_to_layer_type(char * type)
     if (strcmp(type, "[upsample]") == 0) return UPSAMPLE;
     if (strcmp(type, "[empty]") == 0) return EMPTY;
     if (strcmp(type, "[ctdet]")==0) return CTDET;
+    if (strcmp(type, "[polygon]")==0) return POLYGON;
     return BLANK;
 }
 
@@ -258,6 +260,17 @@ layer parse_ctdet(list *options, size_params params)
     l.resize = option_find_float_quiet(options, "resize", 1.0);
     char *map_file = option_find_str(options, "map", 0);
     if (map_file) l.map = read_map(map_file);
+    fprintf(stderr, "                                       ");
+    fprintf(stderr, " -> %4d x%4d x%4d \n", l.out_w, l.out_h, l.out_c);
+    return l;
+}
+
+layer parse_polyGon(list *options, size_params params)
+{
+    int classes = option_find_int(options, "classes", 2);
+
+    layer l = make_polygon_layer(params.batch,classes);
+    assert(l.outputs == params.inputs);
     fprintf(stderr, "                                       ");
     fprintf(stderr, " -> %4d x%4d x%4d \n", l.out_w, l.out_h, l.out_c);
     return l;
@@ -1093,6 +1106,7 @@ learning_rate_policy get_policy(char *s)
 data_type get_data_type(char* s){
     if(strcmp(s, "detection_data")==0) return DETECTION_DATA;
     if(strcmp(s, "center_data")==0) return CTDET_DATA;
+    if(strcmp(s, "page_data")==0) return HOMEPAGE_DATA;
     fprintf(stderr, "Couldn't find data_type %s, going with detection_data\n", s);
     return DETECTION_DATA;
 }
@@ -1367,6 +1381,8 @@ network parse_network_cfg_custom(char *filename, int batch, int time_steps)
             l.keep_delta_gpu = 1;
         }else if(lt == CTDET){
             l = parse_ctdet(options, params);
+        }else if(lt == POLYGON){
+            l = parse_polyGon(options, params);
         }else if (lt == GAUSSIAN_YOLO) {
             l = parse_gaussian_yolo(options, params);
             l.keep_delta_gpu = 1;

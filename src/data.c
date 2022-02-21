@@ -385,37 +385,37 @@ int* fill_ocr_labels (const char* label_name, int *label_length) {
 
 
 PolyGon_S* fill_polyGon_labels (const char* label_name, int *poly_Count) {
-    
-    FILE *file = fopen(label_name, "r");
+    char labelpath[4096];
+    replace_image_to_label(label_name, labelpath);
+    FILE *file = fopen(labelpath, "r");
     if (!file) {
-        printf("Can't open label file. (This can be normal only if you use MSCOCO): %s \n", label_name);
+        printf("Can't open label file. (This can be normal only if you use MSCOCO): %s \n", labelpath);
         FILE* fw = fopen("bad.list", "a");
-        fwrite(label_name, sizeof(char), strlen(label_name), fw);
+        fwrite(labelpath, sizeof(char), strlen(labelpath), fw);
         char *new_line = "\n";
         fwrite(new_line, sizeof(char), strlen(new_line), fw);
         fclose(fw);
         return 0;
     }
-    int labels[5];
     int id;
     int count = 0;
     float x1, y1, x2, y2, x3, y3, x4, y4;
     PolyGon_S * poly_label = (PolyGon_S*)xcalloc(2, sizeof(PolyGon_S));
     poly_label[0].label_id = -1;
     poly_label[1].label_id = -1;
-    while(fscanf(file, "%d %f %f %f %f %f %f %f %f", &id, &x1, &y1, &x2, &y2, &x3, &y3, &x4, &y4) == 1) {
-        poly_label[count].label_id = id;
-        poly_label[count].leftTop.x = x1;
-        poly_label[count].leftTop.y = y1;
+    while(fscanf(file, "%d %f %f %f %f %f %f %f %f", &id, &x1, &y1, &x2, &y2, &x3, &y3, &x4, &y4) == 9) {
+        poly_label[id].label_id = id;
+        poly_label[id].leftTop.x = x1;
+        poly_label[id].leftTop.y = y1;
 
-        poly_label[count].rightTop.x = x2;
-        poly_label[count].rightTop.y = y2;
+        poly_label[id].rightTop.x = x2;
+        poly_label[id].rightTop.y = y2;
 
-        poly_label[count].rightBottom.x = x3;
-        poly_label[count].rightBottom.y = y3;
+        poly_label[id].rightBottom.x = x3;
+        poly_label[id].rightBottom.y = y3;
 
-        poly_label[count].leftBottom.x = x4;
-        poly_label[count].leftBottom.y = y4;
+        poly_label[id].leftBottom.x = x4;
+        poly_label[id].leftBottom.y = y4;
         ++count;
     }
     fclose(file);
@@ -1747,6 +1747,13 @@ void convertToPoly(float* val, PolyGon_S* polygon_label) {
     polygon_label[1].rightBottom.y =val[15];
     polygon_label[1].leftBottom.x = val[16];
     polygon_label[1].leftBottom.y = val[17];
+    // for (int i = 0; i < 18; i++) {
+    //     printf("value: %f ", val[i]);
+    //     if (i % 9 == 0) {
+    //         printf("\n");
+    //     }
+    // }
+    printf("\n");
 }
 
 void convertFromPoly(float* val, PolyGon_S polygon_label) {
@@ -1767,7 +1774,7 @@ matrix load_PolyGon_Points(char **paths, int n)
     for(int i = 0; i < n; ++i) {
         int count = 0;
         PolyGon_S* poly_label = fill_polyGon_labels(paths[i], &count);
-        for (auto j = 0; j < 2; j++) {
+        for (int j = 0; j < 2; j++) {
             convertFromPoly(y.vals[i] + j * 9, poly_label[j]);
         } 
     }
@@ -1821,6 +1828,7 @@ void *load_thread(void *ptr)
     } else if (a.type == OCR_DATA) {
         *a.d = load_data_ocr(a.n, a.paths, a.m, a.w, a.h);
     } else if (a.type == HOMEPAGE_DATA) {
+        //printf("n: %d\n", a.n);
         *a.d = load_data_homepage(a.n, a.paths, a.m, a.w, a.h);
     }
     free(ptr);

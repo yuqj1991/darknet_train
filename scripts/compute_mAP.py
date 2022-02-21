@@ -1,5 +1,6 @@
 from .voc_eval import voc_eval
 import numpy as np
+import os, Document
 
 def label2det(rawLabelFolder, rawImageFolder, anno_root):
 	if not os.path.exists(rawLabelFolder):

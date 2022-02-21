@@ -105,6 +105,7 @@ extern "C" mat_cv *load_image_mat_cv(const char *filename, int flag)
         cv::Mat mat = cv::imread(filename, flag);
         if (mat.empty())
         {
+            std::cout << "empty: " << mat.empty();
             std::string shrinked_filename = filename;
             if (shrinked_filename.length() > 1024) {
                 shrinked_filename.resize(1024);

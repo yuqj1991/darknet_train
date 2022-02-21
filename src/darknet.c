@@ -31,6 +31,7 @@ extern void run_cifar(int argc, char **argv);
 extern void run_go(int argc, char **argv);
 extern void run_art(int argc, char **argv);
 extern void run_super(int argc, char **argv);
+extern void run_polyGon(int argc, char **argv);
 
 void average(int argc, char *argv[])
 {
@@ -554,7 +555,9 @@ int main(int argc, char **argv)
         test_resize(argv[2]);
     } else if (0 == strcmp(argv[1], "train_ocr")){
         run_classifier(argc, argv);
-    }else {
+    } else if (0 == strcmp(argv[1], "polygon")){
+        run_polyGon(argc, argv);
+    } else {
         fprintf(stderr, "Not an option: %s\n", argv[1]);
     }
     return 0;

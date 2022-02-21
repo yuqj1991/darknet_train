@@ -1,5 +1,5 @@
 classes= 1
-train=/home/ubuntu/sharedata/coco/trainperson.txt
-valid=/home/ubuntu/sharedata/coco/val.txt
-names = ../data/person.names
+train=/home/baseuser/workspace/annoDir/ImageSet/review_trainval.txt
+valid=/home/baseuser/workspace/annoDir/ImageSet/review_val.txt
+names = ../data/homework.names
 backup = ../backup

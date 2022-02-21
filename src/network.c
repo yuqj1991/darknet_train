@@ -275,7 +275,16 @@ void forward_network(network net, network_state state)
         l.forward(l, state);
         //printf("%d - Predicted in %lf milli-seconds.\n", i, ((double)get_time_point() - time) / 1000);
         state.input = l.output;
-
+       // if (i == net.n - 1) 
+        {
+            for(int b = 0; b < l.batch; b++) {
+                printf("state input: %d", b);
+                for (int j = 0; j < 18; j++) {
+                    printf(" %f", l.output[b * l.outputs + j]);
+                }
+                printf("\n");
+            }
+        }
         /*
         float avg_val = 0;
         int k;

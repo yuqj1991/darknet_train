@@ -1644,9 +1644,9 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile,
             int m = plist->size;
             //char cwd[FILEPATH_MAX];
             //getcwd(cwd,FILEPATH_MAX);
-            if(access("/home/yuqianjin/workspace/darknet_train/data/out",0)==-1)
+            if(access("../darknet_train/data/out",0)==-1)
             {
-                if (mkdir("/home/yuqianjin/workspace/darknet_train/darknet/data/out",0777))
+                if (mkdir("../darknet_train/darknet/data/out",0777))
                 {
                     printf("creat file bag failed!!!");
                 }
@@ -1679,7 +1679,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile,
                 else{
                     
                     char b[2048];
-                    sprintf(b,"/home/yuqianjin/workspace/darknet_train/results/%s",GetFilename(path));
+                    sprintf(b,"../darknet_train/results/%s",GetFilename(path));
                     save_image(im, b);
                     printf("save %s successfully!\n",GetFilename(path));
                 }

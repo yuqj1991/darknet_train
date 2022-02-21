@@ -1,0 +1,1 @@
+../darknet polygon train -gpus 0 -dont_show ../cfg/homework/homework_polygon.data ../cfg/homework/homework_polygon.cfg ../backup/
